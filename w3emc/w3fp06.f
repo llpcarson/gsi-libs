@@ -1,60 +1,60 @@
        SUBROUTINE W3FP06(ID,KTITLE,N)
-C$$$   SUBPROGRAM  DOCUMENTATION  BLOCK
-C
-C SUBPROGRAM: W3FP06         NMC TITLE SUBROUTINE
-C   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
-C
-C ABSTRACT: PROVIDES A TITLE FOR DATA FIELDS FORMULATED ACCORDING TO
-C   NMC O.N. 84. THE EXTRACTED INFORMATION IS CONVERTED INTO UP TO
-C   81 WORDS AND STORED AT A USER PROVIDED LOCATION.
-C
-C PROGRAM HISTORY LOG:
-C   88-11-28  R.E.JONES
-C   90-02-12  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
-C   91-04-26  R.E.JONES   ADD Q TYPE 23, 136, 137, 71, 159, 75, 118,
-C                         119, 24 TO TABLES, CHANGES FOR BIG RECORDS.
-C   93-02-23  R.E.JONES   ADD Q TYPE 157 & 158 (CORE & TKE) TO TABLES
-C
-C USAGE: CALL W3FP06 (ARG1, ARG2, N)
-C
-C   INPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     ARG1   ARG LIST  12 WORD FIELD LABEL DESCRIBING THE DATA (6
-C                      INTEGER WORDS) OFFICE NOTE 84
-C     N      ARG LIST  INTEGER NUMBER OF LINES OF OUTPUT DESIRED
-C                      = 1  FIRST 88 CHAR. THE ABBREVIATED TITLE
-C                           (LINE 1 STARTS AT ARG2(1))
-C                      = 2  FIRST 216 CHAR. DECIMAL VALUES OF THE
-C                           PARAMETERS
-C                      = 3  ALL 324 CHAR., HEXIDECIMAL DUMP OF THE 12
-C                           WORD FIELD LABEL (LINE 3 CHAR. 221
-C
-C   OUTPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     ARG2   ARG LIST  CHARACTER*324 SIZE ARRAY TO CONTAIN
-C                      THE TITLE IN ACSII
-C
-C   SUBPROGRAMS CALLED:
-C     NAMES                                                   LIBRARY
-C     ------------------------------------------------------- --------
-C     LINE01 LINE02 LINE03 VALUE1                             UNIQUE
-C     INTERNAL (WRITE) AND SHIFT                              SYSTEM
-C
-C   REMARKS: SEE NMC O.N. 84 FOR DATA FIELD ABBREVIATIONS
-C
-C ATTRIBUTES:
-C   LANGUAGE: IBM XL FORTRAN
-C   MACHINE:  IBM SP
-C
-C$$$
-C
+!      SUBPROGRAM  DOCUMENTATION  BLOCK
+!
+! SUBPROGRAM: W3FP06         NMC TITLE SUBROUTINE
+!   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
+!
+! ABSTRACT: PROVIDES A TITLE FOR DATA FIELDS FORMULATED ACCORDING TO
+!   NMC O.N. 84. THE EXTRACTED INFORMATION IS CONVERTED INTO UP TO
+!   81 WORDS AND STORED AT A USER PROVIDED LOCATION.
+!
+! PROGRAM HISTORY LOG:
+!   88-11-28  R.E.JONES
+!   90-02-12  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
+!   91-04-26  R.E.JONES   ADD Q TYPE 23, 136, 137, 71, 159, 75, 118,
+!                         119, 24 TO TABLES, CHANGES FOR BIG RECORDS.
+!   93-02-23  R.E.JONES   ADD Q TYPE 157 & 158 (CORE & TKE) TO TABLES
+!
+! USAGE: CALL W3FP06 (ARG1, ARG2, N)
+!
+!   INPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     ARG1   ARG LIST  12 WORD FIELD LABEL DESCRIBING THE DATA (6
+!                      INTEGER WORDS) OFFICE NOTE 84
+!     N      ARG LIST  INTEGER NUMBER OF LINES OF OUTPUT DESIRED
+!                      = 1  FIRST 88 CHAR. THE ABBREVIATED TITLE
+!                           (LINE 1 STARTS AT ARG2(1))
+!                      = 2  FIRST 216 CHAR. DECIMAL VALUES OF THE
+!                           PARAMETERS
+!                      = 3  ALL 324 CHAR., HEXIDECIMAL DUMP OF THE 12
+!                           WORD FIELD LABEL (LINE 3 CHAR. 221
+!
+!   OUTPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     ARG2   ARG LIST  CHARACTER*324 SIZE ARRAY TO CONTAIN
+!                      THE TITLE IN ACSII
+!
+!   SUBPROGRAMS CALLED:
+!     NAMES                                                   LIBRARY
+!     ------------------------------------------------------- --------
+!     LINE01 LINE02 LINE03 VALUE1                             UNIQUE
+!     INTERNAL (WRITE) AND SHIFT                              SYSTEM
+!
+!   REMARKS: SEE NMC O.N. 84 FOR DATA FIELD ABBREVIATIONS
+!
+! ATTRIBUTES:
+!   LANGUAGE: IBM XL FORTRAN
+!   MACHINE:  IBM SP
+!
+!   
+!
       INTEGER(8)         ID(6)
       INTEGER(4)      MASK(8)
-C
+!
       CHARACTER * 324  KTITLE
-C
+!
       DATA  MASK(1)/X'0000000F'/
       DATA  MASK(2)/X'000000FF'/
       DATA  MASK(3)/X'00000FFF'/
@@ -63,65 +63,65 @@ C
       DATA  MASK(6)/X'00FFFFFF'/
       DATA  MASK(7)/X'0FFFFFFF'/
       DATA  MASK(8)/X'FFFFFFFF'/
-C
+!
       CALL LINE01(ID,MASK,KTITLE)
         IF (N.GT.1) GO TO 10
       RETURN
-C
+!
    10 CONTINUE
         CALL LINE02(ID,MASK,KTITLE)
         IF (N.GT.2) GO TO 20
         RETURN
-C
+!
    20 CONTINUE
         CALL LINE03(ID,KTITLE)
         RETURN
       END
        SUBROUTINE LINE01(ID,MASK,KTITLE)
-C$$$   SUBPROGRAM  DOCUMENTATION  BLOCK
-C
-C SUBPROGRAM: LINE01         CREATES THE FIRST LINE OF TITLE
-C   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
-C
-C ABSTRACT: CREATES THE FIST LINE OF THE TITLE FROM THE ID WORDS.
-C   CALL BY W3FP06 TO MAKE 1ST LINE OF TITLE. WORDS 1 TO 22.
-C
-C PROGRAM HISTORY LOG:
-C   88-09-02  R.E.JONES
-C   93-02-23  R.E.JONES   ADD Q TYPE 157 & 158 (CORE & TKE) TO TABLES
-C
-C USAGE:  CALL LINE01(ID,MASK,KTITLE)
-C
-C   INPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     ID     ARG LIST  ID WORDS (6 INTEGER WORDS) OFFICE NOTE 84
-C     MASK   ARG LIST  MASK FOR UNPACKING ID WORDS (8 INTEGER WORDS)
-C
-C   OUTPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     KTITLE ARG LIST  CHARACTER *324 ARRAY
-C            TAPE6     ERROR MESSAGES
-C
-C   SUBPROGRAMS CALLED:
-C     NAMES                                                   LIBRARY
-C     ------------------------------------------------------- --------
-C     AND SHIFT                                               SYSLIB
-C     VALUE1 CLIMO SETCL                                      UNIQUE
-C
-C ATTRIBUTES:
-C   LANGUAGE: IBM XL FORTRAN
-C   MACHINE:  IBM SP
-C
-C$$$
-C
-C     CREATES THE FIRST 22 WORDS OF TITLER
-C
+!      SUBPROGRAM  DOCUMENTATION  BLOCK
+!
+! SUBPROGRAM: LINE01         CREATES THE FIRST LINE OF TITLE
+!   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
+!
+! ABSTRACT: CREATES THE FIST LINE OF THE TITLE FROM THE ID WORDS.
+!   CALL BY W3FP06 TO MAKE 1ST LINE OF TITLE. WORDS 1 TO 22.
+!
+! PROGRAM HISTORY LOG:
+!   88-09-02  R.E.JONES
+!   93-02-23  R.E.JONES   ADD Q TYPE 157 & 158 (CORE & TKE) TO TABLES
+!
+! USAGE:  CALL LINE01(ID,MASK,KTITLE)
+!
+!   INPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     ID     ARG LIST  ID WORDS (6 INTEGER WORDS) OFFICE NOTE 84
+!     MASK   ARG LIST  MASK FOR UNPACKING ID WORDS (8 INTEGER WORDS)
+!
+!   OUTPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     KTITLE ARG LIST  CHARACTER *324 ARRAY
+!            TAPE6     ERROR MESSAGES
+!
+!   SUBPROGRAMS CALLED:
+!     NAMES                                                   LIBRARY
+!     ------------------------------------------------------- --------
+!     AND SHIFT                                               SYSLIB
+!     VALUE1 CLIMO SETCL                                      UNIQUE
+!
+! ATTRIBUTES:
+!   LANGUAGE: IBM XL FORTRAN
+!   MACHINE:  IBM SP
+!
+!   
+!
+!     CREATES THE FIRST 22 WORDS OF TITLER
+!
       INTEGER(8)          ID(6)
       INTEGER(4)       MASK(8)
       INTEGER(4)       SHFMSK(17)
-C
+!
       CHARACTER * 4    UNIT
       CHARACTER * 4    UNIT1
       CHARACTER * 4    DAYS
@@ -144,16 +144,16 @@ C
       CHARACTER * 20   VUNIT(2)
       CHARACTER * 7    AFTER
       CHARACTER * 7    AFTBEF
-C
+!
       INTEGER          KK(3)
       INTEGER          LL(166)
       INTEGER          JKEEP(17)
       INTEGER          JLIST(17)
       INTEGER          C1,C2,E1,E2,S1,S2,Q,M,G
       INTEGER          YY,MM,DD,HH,F1,F2,JT,JN
-C
-C     IDWORDS:  MASK CONTROL (INTEGER)
-C
+!
+!     IDWORDS:  MASK CONTROL (INTEGER)
+!
       DATA SHFMSK( 1)/X'20020100'/
       DATA SHFMSK( 2)/X'28020400'/
       DATA SHFMSK( 3)/X'30020400'/
@@ -171,9 +171,9 @@ C
       DATA SHFMSK(15)/X'1C010100'/
       DATA SHFMSK(16)/X'1C010200'/
       DATA SHFMSK(17)/X'20020200'/
-C
-C     REFERENCE TABLE FOR SNAME.
-C
+!
+!     REFERENCE TABLE FOR SNAME.
+!
       DATA JLIST(1)/1/
       DATA JLIST(2)/2/
       DATA JLIST(3)/6/
@@ -191,9 +191,9 @@ C
       DATA JLIST(15)/148/
       DATA JLIST(16)/131/
       DATA JLIST(17)/132/
-C
-C     SNAME TABLE.
-C
+!
+!     SNAME TABLE.
+!
       DATA SNAME( 1)/' GPM'/
       DATA SNAME( 2)/' PA '/
       DATA SNAME( 3)/' M  '/
@@ -212,9 +212,9 @@ C
       DATA SNAME(16)/'MWSL'/
       DATA SNAME(17)/'PLYR'/
       DATA SNAME(18)/'    '/
-C
-C     REFERENCE TABLE FOR QNAME.
-C
+!
+!     REFERENCE TABLE FOR QNAME.
+!
       DATA LL( 1)/  1/
       DATA LL( 2)/  2/
       DATA LL( 3)/  6/
@@ -381,9 +381,9 @@ C
       DATA LL(164)/119/
       DATA LL(165)/24/
       DATA LL(166)/158/
-C
-C     QNAME TABLE:  CHARACTER*6
-C
+!
+!     QNAME TABLE:  CHARACTER*6
+!
       DATA QNAME( 1)/' HGT  '/
       DATA QNAME( 2)/' P ALT'/
       DATA QNAME( 3)/' DIST '/
@@ -550,33 +550,33 @@ C
       DATA QNAME(164)/' CIN  '/
       DATA QNAME(165)/' VTMP '/
       DATA QNAME(166)/' TKE  '/
-C
-C  REFERENCE TABLE FOR G (GENERATING PROGRAM NAME)
-C
+!
+!  REFERENCE TABLE FOR G (GENERATING PROGRAM NAME)
+!
       DATA KK(1)/57/
       DATA KK(2)/58/
       DATA KK(3)/59/
-C
-C  G TABLE (GENERATING PROGRM NAME):
-C
+!
+!  G TABLE (GENERATING PROGRM NAME):
+!
       DATA KNAME/'   ECMWF', ' READING', ',UK.    ',
      &           '    FNOC', ' MONTERE', 'Y, CA.  ',
      &           '  AFGWC ', 'OFFUTT A', 'FB, NB. '/
       DATA KNAME1/'   WMC N','MC WASHI', 'NGTON   '/
-C
+!
       DATA AFTER /' AFTER '/
       DATA DN    /'DN'/
       DATA QNAME1/' THCK '/
       DATA QNAME2/' THKDN'/
       DATA QNAME3/' PRSDN'/
-C
+!
       DATA VUNIT(1)/' 0-HR FCST VALID AT '/
       DATA VUNIT(2)/' ANALYSIS  VALID AT '/
       DATA UNIT1   /' HRS'/
       DATA DAYS    /' DYS'/
       DATA FOR1    /' FOR '/
       DATA DASH    /'-'/
-C
+!
  200   FORMAT ( ' ',A7,A4,' ',A7)
  210   FORMAT ( A4,1X,A6,A5,F4.1,A4,A7,
      &          I2.2,A1,I2.2,A1,I2.2,1X,I2.2,'Z',3A8)
@@ -585,9 +585,9 @@ C
      &       I5,35X)
  240   FORMAT ( A4,1X,A6,A20,
      &          I2.2,A1,I2.2,A1,I2.2,1X,I2.2,'Z',3A8)
-C
-C$        1.   UNPACK ID WORDS.
-C
+!
+!         1.   UNPACK ID WORDS.
+!
       DO 10 N = 1,17
         ITEMP    = 0
         KTEMP    = 0
@@ -599,7 +599,7 @@ C
         KTEMP    = ID(NID)
         JKEEP(N) = IAND(ITEMP,ISHFT(KTEMP,-NSHIFT))
    10 CONTINUE
-C
+!
       F1 = JKEEP(1)
       DD = JKEEP(2)
       MM = JKEEP(3)
@@ -617,30 +617,30 @@ C
       JT = JKEEP(15)
       JN = JKEEP(16)
       F2 = JKEEP(17)
-C
+!
       KS = IAND(ISHFT(ID(3),-40_8),255_8)
-C
-C         2.  FIND WHICH PARAMETER (Q) IS INDICATED BE THE ID WORDS.
-C
+!
+!         2.  FIND WHICH PARAMETER (Q) IS INDICATED BE THE ID WORDS.
+!
       DO 20 N = 1,166
         NN = N
         IF (Q.EQ.LL(N)) GO TO 30
  20   CONTINUE
-C
-C     CAN NOT FIND A LEGAL Q
+!
+!     CAN NOT FIND A LEGAL Q
       GO TO 170
-C
+!
  30   CONTINUE
       UNIT(1:4)    = UNIT1(1:4)
       FOR(1:5)     = FOR1(1:5)
       AFTBEF(1:7)  = AFTER(1:7)
-C
+!
       IF (E1.GT.128) E1 = -(JKEEP(6)-128)
       IF (E2.GT.128) E2 = -(JKEEP(8)-128)
-C
-C$       3.    FIND WHICH SURFACE IS INDICATED BY THE ID WORDS
-C$                  AS BEING THE FIRST SURFACE.
-C
+!
+!        3.    FIND WHICH SURFACE IS INDICATED BY THE ID WORDS
+!                   AS BEING THE FIRST SURFACE.
+!
       DO 40 I = 1,17
         IF (S1.EQ.JLIST(I)) THEN
           K1 = I
@@ -648,21 +648,21 @@ C
         ENDIF
  40   CONTINUE
         K1 = 18
-C
+!
  50   CONTINUE
-C
-C$        4.   BEGIN PROCESSING OF A ONE-SURFACE TITLE
-C
+!
+!         4.   BEGIN PROCESSING OF A ONE-SURFACE TITLE
+!
       IF (M.EQ.0.OR.M.EQ.8) THEN
         K2 = K1
         CALL VALUE1(S1,C1,E1,INUM1)
         WRITE (KTITLE(1:20),220) INUM1
         GO TO 80
       ENDIF
-C
-C$       5.    FIND WHICH SURFACE IS INDICATED BY THE ID WORDS
-C$                  AS BEING THE SECOND SURFACE.
-C
+!
+!        5.    FIND WHICH SURFACE IS INDICATED BY THE ID WORDS
+!                   AS BEING THE SECOND SURFACE.
+!
       DO 60 I = 1,17
         IF (S2.EQ.JLIST(I)) THEN
           K2 = I
@@ -670,46 +670,46 @@ C
         ENDIF
  60   CONTINUE
         K2 = 18
-C
+!
  70   CONTINUE
-C
-C$        6.    BEGIN PROCESSING OF A TWO-SURFACE TITLE
-C
+!
+!         6.    BEGIN PROCESSING OF A TWO-SURFACE TITLE
+!
       CALL VALUE1(S1,C1,E1,INUM1)
       CALL VALUE1(S2,C2,E2,INUM2)
       WRITE (KTITLE(1:20),200) INUM1 , SNAME(K1) , INUM2
-C
+!
  80   CONTINUE
       QWRITE = QNAME(NN)
-C
+!
       IF (Q.EQ.1 .AND. M.EQ.1.AND. S1.EQ.8)             QWRITE = QNAME1
       IF (Q.EQ.1 .AND. M.EQ.1.AND. S1.EQ.8.AND.KS.EQ.2) QWRITE = QNAME2
       IF (Q.EQ.8 .AND. S1.EQ.128.AND.KS.EQ.2)           QWRITE = QNAME3
       IF (JT.EQ.6) QWRITE(5:6) = DN(1:2)
-C
-C$        7.    SET DATE/TIME FIELDS
-C
-C$          A.    CHECK IF F1 AND F2 ARE IN HRS, HALF DAYS OR DAYS.
-C
+!
+!         7.    SET DATE/TIME FIELDS
+!
+!           A.    CHECK IF F1 AND F2 ARE IN HRS, HALF DAYS OR DAYS.
+!
           RF1 = F1
           RF2 = F2
-C
-C           B:    IF F1 IN HALF DAYS: CONVERT TO HOURS
-C
+!
+!           B:    IF F1 IN HALF DAYS: CONVERT TO HOURS
+!
         IF (JN.EQ.15.OR.JT.EQ.7) THEN
            RF1 = RF1 * 12.0
            RF2 = RF2 * 12.0
         ENDIF
-C
-C           C:    IF F1 IN DAYS: CONVERT TO HOURS
-C
+!
+!           C:    IF F1 IN DAYS: CONVERT TO HOURS
+!
         IF (JT.EQ.10) THEN
            RF1 = RF1 * 24.0
            RF2 = RF2 * 24.0
         ENDIF
-C
-C           D:    CONVERT HOURS TO DAYS IF HOURS GREATER THAN 72
-C
+!
+!           D:    CONVERT HOURS TO DAYS IF HOURS GREATER THAN 72
+!
         IF (JT.NE.6) THEN
           IF (RF1.GT.72.0.OR.RF2.GT.72.0) THEN
              RF1 = RF1 / 24.0
@@ -717,7 +717,7 @@ C
              UNIT(1:4) = DAYS(1:4)
           ENDIF
         ENDIF
-C
+!
         IF (JT.EQ.6) THEN
           IF (F1.GT.127) THEN
             F1 = AND(F1,127)
@@ -729,28 +729,28 @@ C
           RF1 = CF1
           CALL SETCL(CF2,UNIT,KTITLE)
         ENDIF
-C
-C$        8.   SET GENERATING PROGRAM NAME
-C
+!
+!         8.   SET GENERATING PROGRAM NAME
+!
       DO 110 K = 1,3
         IF (G.EQ.KK(K)) GO TO 130
   110 CONTINUE
-C
+!
       DO 120 L = 1,3
         KWRITE(L) = KNAME1(L)
   120 CONTINUE
       GO TO 150
-C
+!
   130 CONTINUE
       DO 140 L = 1,3
         KWRITE(L) = KNAME( 3*(K-1) + L)
   140 CONTINUE
-C
-C$        9.    ENCODE THE TITLE LINE
-C
-C$        9.1   DISTINGUISH BETWEEN ANALYSIS AND ZERO FORECASTS
-C                           AND 'REAL' FORECASTS
-C
+!
+!         9.    ENCODE THE TITLE LINE
+!
+!         9.1   DISTINGUISH BETWEEN ANALYSIS AND ZERO FORECASTS
+!                           AND 'REAL' FORECASTS
+!
   150 CONTINUE
          IF (F1.NE.0) GO TO 160
            IF (G.EQ.19.OR.G.EQ.22.OR.G.EQ.43.OR.G.EQ.44.OR.G.EQ.49.OR.
@@ -760,76 +760,76 @@ C
            ELSE
               III = 1
            ENDIF
-C
+!
       WRITE (KTITLE(21:88),240) SNAME(K2), QWRITE, VUNIT(III),
      & YY, DASH, MM, DASH, DD, HH, (KWRITE(L),L=1,3)
       RETURN
-C
+!
  160  CONTINUE
       WRITE (KTITLE(21:88),210) SNAME(K2), QWRITE, FOR, RF1, UNIT,
      & AFTBEF, YY, DASH, MM, DASH, DD, HH, (KWRITE(L),L=1,3)
       RETURN
-C
+!
  170  CONTINUE
         WRITE (KTITLE(1:88),230) Q
       RETURN
       END
        SUBROUTINE VALUE1(S,C,E,NUM)
-C$$$   SUBPROGRAM  DOCUMENTATION  BLOCK
-C
-C SUBPROGRAM: VALUE1        CREATES VALUE1 OF SURFACE FROM IDS
-C   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
-C
-C ABSTRACT: CREATES THE NUMERICAL VALUE FOR THE SURFACE
-C   TO BE BUILT INTO THE FIRST LINE OF THE TITLE.
-C
-C PROGRAM HISTORY LOG:
-C   88-11-28  R.E.JONES
-C   89-11-01  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
-C
-C USAGE:  CALL VALUE1(S,C,E,NUM)
-C
-C   INPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     S      ARG LIST  INTEGER NUMBER OF SURFACE
-C     C,E              NUMERICAL VALUE OF THE SURFACE
-C                      SURFACE = S * 10 ** E
-C
-C   OUTPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     NUM    ARG LIST  7 CHARACTER VALUE OF THE SURFACE FOR THE TITLE
-C
-C   SUBPROGRAMS CALLED:
-C     NAMES                                                   LIBRARY
-C     ------------------------------------------------------- --------
-C     INTERNAL (WRITE)                                        SYSLIB
-C
-C ATTRIBUTES:
-C   LANGUAGE: CRAY CFT77 FORTRAN
-C   MACHINE:  CRAY Y-MP8/832
-C
-C$$$
-C
+!      SUBPROGRAM  DOCUMENTATION  BLOCK
+!
+! SUBPROGRAM: VALUE1        CREATES VALUE1 OF SURFACE FROM IDS
+!   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
+!
+! ABSTRACT: CREATES THE NUMERICAL VALUE FOR THE SURFACE
+!   TO BE BUILT INTO THE FIRST LINE OF THE TITLE.
+!
+! PROGRAM HISTORY LOG:
+!   88-11-28  R.E.JONES
+!   89-11-01  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
+!
+! USAGE:  CALL VALUE1(S,C,E,NUM)
+!
+!   INPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     S      ARG LIST  INTEGER NUMBER OF SURFACE
+!     C,E              NUMERICAL VALUE OF THE SURFACE
+!                      SURFACE = S * 10 ** E
+!
+!   OUTPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     NUM    ARG LIST  7 CHARACTER VALUE OF THE SURFACE FOR THE TITLE
+!
+!   SUBPROGRAMS CALLED:
+!     NAMES                                                   LIBRARY
+!     ------------------------------------------------------- --------
+!     INTERNAL (WRITE)                                        SYSLIB
+!
+! ATTRIBUTES:
+!   LANGUAGE: CRAY CFT77 FORTRAN
+!   MACHINE:  CRAY Y-MP8/832
+!
+!   
+!
       INTEGER        C
       INTEGER        E
       INTEGER        S
-C
+!
       CHARACTER*8    JNUM
       CHARACTER*8    KNUM
       CHARACTER*7    LTEMP
       CHARACTER*8    NUM
       CHARACTER*1    POINT
       CHARACTER*1    ZERO
-C
+!
       DATA  JNUM  /' 0.0000 '/
       DATA  KNUM  /'        '/
       DATA  POINT /'.'/
       DATA  ZERO  /'0'/
-C
+!
  101  FORMAT ( I6,' ')
-C
+!
       IF (S.GE.128.AND.S.LE.132) GO TO 110
       IF (C.EQ.0) GO TO 100
       WRITE (LTEMP(1:7),101) C
@@ -837,63 +837,63 @@ C
         K = J + 1
         IF (J.EQ.0) GO TO 90
           NUM(1:J)   = LTEMP(1:J)
-C
+!
  90   CONTINUE
         NUM(K:K)   = POINT
         NUM(K+1:8) = LTEMP(K:7)
         IF (J.EQ.0) NUM(2:2) = ZERO
         GO TO 150
-C
+!
  100  CONTINUE
         NUM = JNUM
         GO TO 150
-C
+!
  110  CONTINUE
         NUM = KNUM
-C
+!
  150  CONTINUE
-C
+!
         RETURN
       END
        SUBROUTINE LINE02(ID,MASK,KTITLE)
-C$$$   SUBPROGRAM  DOCUMENTATION  BLOCK
-C
-C SUBPROGRAM: LINE02         CREATES THE SECOND LINE OF TITLE
-C   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
-C
-C ABSTRACT: CREATES THE SECOND LINE OF THE TITLE FROM THE ID WORDS.
-C   CALLED BY W3FP06. WORDS 23 TO 54.
-C
-C PROGRAM HISTORY LOG:
-C   88-11-28  R.E.JONES
-C   89-11-01  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
-C   91-03-01  R.E.JONES   CHANGES FOR BIG RECORDS
-C
-C USAGE:  CALL LINE02(ID,MASK,KTITLE)
-C
-C   INPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     ID     ARG LIST  ID WORDS (6 INTEGER WORDS) OFFICE NOTE 84
-C     MASK   ARG LIST  MASK FOR UNPACKING ID WORDS (8 WORDS)
-C
-C   OUTPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     KTITLE ARG LIST  TITLE CHARACTER*324
-C
-C   SUBPROGRAMS CALLED:
-C     NAMES                                                   LIBRARY
-C     ------------------------------------------------------- --------
-C     INTERNAL (WRITE) SHIFT  AND                             SYSLIB
-C     q9ie32                                                  W3LIB
-C
-C ATTRIBUTES:
-C   LANGUAGE: IBM XL FORTRAN
-C   MACHINE:  IBM SP
-C
-C$$$
-C
+!      SUBPROGRAM  DOCUMENTATION  BLOCK
+!
+! SUBPROGRAM: LINE02         CREATES THE SECOND LINE OF TITLE
+!   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
+!
+! ABSTRACT: CREATES THE SECOND LINE OF THE TITLE FROM THE ID WORDS.
+!   CALLED BY W3FP06. WORDS 23 TO 54.
+!
+! PROGRAM HISTORY LOG:
+!   88-11-28  R.E.JONES
+!   89-11-01  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
+!   91-03-01  R.E.JONES   CHANGES FOR BIG RECORDS
+!
+! USAGE:  CALL LINE02(ID,MASK,KTITLE)
+!
+!   INPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     ID     ARG LIST  ID WORDS (6 INTEGER WORDS) OFFICE NOTE 84
+!     MASK   ARG LIST  MASK FOR UNPACKING ID WORDS (8 WORDS)
+!
+!   OUTPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     KTITLE ARG LIST  TITLE CHARACTER*324
+!
+!   SUBPROGRAMS CALLED:
+!     NAMES                                                   LIBRARY
+!     ------------------------------------------------------- --------
+!     INTERNAL (WRITE) SHIFT  AND                             SYSLIB
+!     q9ie32                                                  W3LIB
+!
+! ATTRIBUTES:
+!   LANGUAGE: IBM XL FORTRAN
+!   MACHINE:  IBM SP
+!
+!   
+!
       INTEGER(8)          ID(6)
       INTEGER(8)          IKEEP(17)
       INTEGER(4)          MASK(8)
@@ -902,11 +902,11 @@ C
       integer(8)  irtemp
       real(4)     rtemp(2)
       equivalence (irtemp,rtemp(1))
-C
+!
       CHARACTER * 324  KTITLE
-C
-C     IDWORDS:  MASK CONTROL (INTEGER)
-C
+!
+!     IDWORDS:  MASK CONTROL (INTEGER)
+!
       DATA MASKN /X'FFFFFFFFFFFF0000'/
       DATA MASK32/X'00000000FFFFFFFF'/
       DATA SHFMSK( 1)/X'3C010200'/
@@ -926,13 +926,13 @@ C
       DATA SHFMSK(15)/X'00040500'/
       DATA SHFMSK(16)/X'00080500'/
       DATA SHFMSK(17)/X'20040600'/
-C
+!
  100  FORMAT(' M=',I2,' T=',I2,' N=',I2,' F1=',I3,' F2=',I3,' CD=',I3,
      1' CM=',I3,' KS=',I3,' K=',I3,' GES=',I2,' R=',I3,' G=',I3,
      2' J=',I5,' B=',I5,' Z=',I5,' A=',E15.8,' N=',I5,'   ')
-C
-C     UNPACK ID WORDS.
-C
+!
+!     UNPACK ID WORDS.
+!
       DO 10 N = 1,17
         ITEMP    = SHFMSK(N)
         NSHIFT   = IAND(ISHFT(ITEMP,-24),255)
@@ -942,126 +942,126 @@ C
         KTEMP    = ID(NID)
         IKEEP(N) = IAND(JTEMP,ISHFT(KTEMP,-NSHIFT))
  10   CONTINUE
-C
-C     CONVERT IBM 32 BIT F.P. NUMBER TO IEEE F.P. NUMBER
-C
-C      CALL USSCTC(ID(5),5,A,1)
+!
+!     CONVERT IBM 32 BIT F.P. NUMBER TO IEEE F.P. NUMBER
+!
+!      CALL USSCTC(ID(5),5,A,1)
       irtemp=ID(5)
       call q9ie32(rtemp(2),rtemp(1),1,istat)
       a=rtemp(1)
-C
-C     CONVERT 16 BIT SIGNED INTEGER INTO A 64 BIT INTEGER.
-C
+!
+!     CONVERT 16 BIT SIGNED INTEGER INTO A 64 BIT INTEGER.
+!
       IF (BTEST(IKEEP(17),15_8)) THEN
          IKEEP(17) = IOR(IKEEP(17),MASKN)
       ENDIF
-C
-C     TEST FOR BIG RECORD
-C
+!
+!     TEST FOR BIG RECORD
+!
       IF (IKEEP(13).EQ.0) THEN
         IKEEP(13) = IAND(ID(6),MASK32)
       END IF
-C
+!
       WRITE (KTITLE(89:216),100) (IKEEP(I),I=1,15) , A , IKEEP(17)
       RETURN
       END
        SUBROUTINE LINE03(ID,KTITLE)
-C$$$   SUBPROGRAM  DOCUMENTATION  BLOCK
-C
-C SUBPROGRAM: LINE03         CREATES THE THIRD LINE OF TITLE
-C   AUTHOR: JONES,R.E        ORG: W342       DATE: 86-12-03
-C
-C ABSTRACT: CREATES THE THIRD LINE OF THE TITLE FROM THE ID WORDS.
-C   CALLED BY W3FP06 TO CREATE WORDS 55 TO 81 OF THE TITLE.
-C
-C PROGRAM HISTORY LOG:
-C   88-11-28  R.E.JONES
-C   90-02-03  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
-C
-C USAGE:  CALL LINE03(ID,KTITLE)
-C
-C   INPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     ID     ARG LIST  ID WORDS (6 INTEGER)  OFFICE NOTE 84
-C
-C   OUTPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     KTITLE ARG LIST  CHARACTER*324 ARRAY
-C
-C   SUBPROGRAMS CALLED:
-C     NAMES                                                   LIBRARY
-C     ------------------------------------------------------- --------
-C     INTERNAL (WRITE)                                        SYSLIB
-C
-C
-C ATTRIBUTES:
-C   LANGUAGE: CRAY CFT77 FORTRAN
-C   MACHINE:  CRAY Y-MP8/832
-C
-C$$$
-C
+!      SUBPROGRAM  DOCUMENTATION  BLOCK
+!
+! SUBPROGRAM: LINE03         CREATES THE THIRD LINE OF TITLE
+!   AUTHOR: JONES,R.E        ORG: W342       DATE: 86-12-03
+!
+! ABSTRACT: CREATES THE THIRD LINE OF THE TITLE FROM THE ID WORDS.
+!   CALLED BY W3FP06 TO CREATE WORDS 55 TO 81 OF THE TITLE.
+!
+! PROGRAM HISTORY LOG:
+!   88-11-28  R.E.JONES
+!   90-02-03  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
+!
+! USAGE:  CALL LINE03(ID,KTITLE)
+!
+!   INPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     ID     ARG LIST  ID WORDS (6 INTEGER)  OFFICE NOTE 84
+!
+!   OUTPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     KTITLE ARG LIST  CHARACTER*324 ARRAY
+!
+!   SUBPROGRAMS CALLED:
+!     NAMES                                                   LIBRARY
+!     ------------------------------------------------------- --------
+!     INTERNAL (WRITE)                                        SYSLIB
+!
+!
+! ATTRIBUTES:
+!   LANGUAGE: CRAY CFT77 FORTRAN
+!   MACHINE:  CRAY Y-MP8/832
+!
+!   
+!
       INTEGER(8)         ID(6)
       INTEGER(8)      MASK32
       INTEGER         ID84(12)
-C
+!
       CHARACTER * 324  KTITLE
-C
+!
       DATA  MASK32/X'00000000FFFFFFFF'/
-C
-C     FORTRAN INTERNAL WRITE STATEMENT REPLACES ENCODE
-C
+!
+!     FORTRAN INTERNAL WRITE STATEMENT REPLACES ENCODE
+!
  100  FORMAT ( 12(1X,Z8))
-C
+!
       DO 10 J = 1,11,2
         ID84(J)   = ISHFT(ID(J/2+1),-32_8)
         ID84(J+1) = IAND(ID(J/2+1),MASK32)
  10   CONTINUE
-C
+!
       WRITE (KTITLE(217:324),100) (ID84(I),I=1,12)
       RETURN
       END
        SUBROUTINE CLIMO(CF1,CF2,UNIT,FOR,AFTBEF)
-C$$$   SUBPROGRAM  DOCUMENTATION  BLOCK
-C
-C SUBPROGRAM: CLIMO          SETS TIME-AVERAGED TITLES
-C   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
-C
-C  ABSTRACT: FILLS IN THE FIRST THIRTEEN CHARACTERS IN THE TITLE
-C      TO MAKE THE TITLE A TIME-AVERAGED TITLE.
-C
-C PROGRAM HISTORY LOG:
-C   88-11-28  R.E.JONES
-C   89-11-01  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
-C
-C  USAGE:  CALL CLIMO(CF1,CF2,UNIT,FOR)
-C
-C   INPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     CF1    ARG LIST  FORECAST PERIOD LENGTH
-C     CF2    ARG LIST  LENGTH OF THE AVERAGE
-C     UNIT   ARG LIST  ORIGINALLY SET TO ' HRS'
-C     FOR    ARG LIST  ORIGINALLY SET TO ' FOR '
-C     AFTBEF ARG LIST  ORIGINALLY SET TO ' AFTER '
-C
-C   OUTPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     UNIT   ARG LIST  SET TO ' DYS' IF NECESSARY
-C     FOR    ARG LIST  SET TO ' CTR '
-C     AFTBEF ARG LIST  SET TO ' BEFOR ' IF NECESSARY
-C
-C  ATTRIBUTES:
-C    LANGUAGE: CRAY CFT77 FORTRAN
-C    MACHINE:  CRAY Y-MP8/832
-C
-C$$$
-C
+!      SUBPROGRAM  DOCUMENTATION  BLOCK
+!
+! SUBPROGRAM: CLIMO          SETS TIME-AVERAGED TITLES
+!   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
+!
+!  ABSTRACT: FILLS IN THE FIRST THIRTEEN CHARACTERS IN THE TITLE
+!      TO MAKE THE TITLE A TIME-AVERAGED TITLE.
+!
+! PROGRAM HISTORY LOG:
+!   88-11-28  R.E.JONES
+!   89-11-01  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
+!
+!  USAGE:  CALL CLIMO(CF1,CF2,UNIT,FOR)
+!
+!   INPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     CF1    ARG LIST  FORECAST PERIOD LENGTH
+!     CF2    ARG LIST  LENGTH OF THE AVERAGE
+!     UNIT   ARG LIST  ORIGINALLY SET TO ' HRS'
+!     FOR    ARG LIST  ORIGINALLY SET TO ' FOR '
+!     AFTBEF ARG LIST  ORIGINALLY SET TO ' AFTER '
+!
+!   OUTPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     UNIT   ARG LIST  SET TO ' DYS' IF NECESSARY
+!     FOR    ARG LIST  SET TO ' CTR '
+!     AFTBEF ARG LIST  SET TO ' BEFOR ' IF NECESSARY
+!
+!  ATTRIBUTES:
+!    LANGUAGE: CRAY CFT77 FORTRAN
+!    MACHINE:  CRAY Y-MP8/832
+!
+!   
+!
         REAL         CF1
         REAL         CF2
-C
+!
         CHARACTER*7  AFTBEF
         CHARACTER*7  BEFOR
         CHARACTER*5  FOR
@@ -1069,95 +1069,95 @@ C
         CHARACTER*4  UNIT
         CHARACTER*4  UNIT1
         CHARACTER*4  UNIT2
-C
+!
         DATA  BEFOR /' BEFOR '/
         DATA  FOR1  /' CTR '/
         DATA  UNIT1 /' DYS'/
         DATA  UNIT2 /' HRS'/
-C
-C       SET FOR TO ' CTR '
-C
+!
+!       SET FOR TO ' CTR '
+!
         FOR(1:5) = FOR1(1:5)
-C
-C       DIFFERENCE = CENTERDAY - RUNDATE = F1 + 2 DAYS
-C       CHANGE CF1 TO HOURS, ADD 48 HOURS
-C
+!
+!       DIFFERENCE = CENTERDAY - RUNDATE = F1 + 2 DAYS
+!       CHANGE CF1 TO HOURS, ADD 48 HOURS
+!
         DIFF = CF1 * 12.0 + 48.0
-C
-C       IF DIFF NEGATIVE, SET AFTBEF TO ' BEFOR '
-C
+!
+!       IF DIFF NEGATIVE, SET AFTBEF TO ' BEFOR '
+!
         IF (DIFF.LT.0.0) AFTBEF(1:7) = BEFOR(1:7)
-C
+!
         CF2 = CF2 * 12.0
-C
+!
         IF (ABS(DIFF).LE.72.0) THEN
           CF1 = ABS(DIFF)
           CF2 = CF2 / 24.0
-C
-C        SET UNIT TO ' HRS '
-C
+!
+!        SET UNIT TO ' HRS '
+!
           UNIT(1:4) = UNIT2(1:4)
           GO TO 100
         ENDIF
-C
+!
         CF1 = ABS(DIFF / 24.0 )
         CF2 = CF2 / 24.0
-C
-C       SET UNIT TO ' DYS '
-C
+!
+!       SET UNIT TO ' DYS '
+!
         UNIT(1:4) = UNIT1(1:4)
-C
+!
  100   CONTINUE
        RETURN
        END
        SUBROUTINE SETCL(CF2,UNIT,KTITLE)
-C$$$   SUBPROGRAM  DOCUMENTATION  BLOCK
-C
-C SUBPROGRAM: SETCL          ENCODES TIME-AVERAGED TITLE
-C   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
-C
-C  ABSTRACT: ENCODES THE FIRST THIRTEEN CHARACTERS IN THE TITLE
-C      TO MAKE THE TITLE A TIME-AVERAGED TITLE.
-C
-C PROGRAM HISTORY LOG:
-C   88-11-28  R.E.JONES
-C   89-11-01  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
-C
-C USAGE:  CALL CLIMO(F2,UNIT,KTITLE)
-C
-C   INPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     CF2    ARG LIST  LENGTH OF THE FORECAST PERIOD
-C     UNIT   ARG LIST  UNITS FOR CF2
-C     KTITLE ARG LIST  TITLE TO BE MODIFIED
-C
-C   OUTPUT VARIABLES:
-C     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
-C     ------ --------- -----------------------------------------------
-C     KTITLE ARG LIST  TITLE WITH THE TIME-AVERAGED INCLUDED
-C
-C ATTRIBUTES:
-C   LANGUAGE: CRAY CFT77 FORTRAN
-C   MACHINE:  CRAY Y-MP8/832
-C
-C$$$
-C
+!      SUBPROGRAM  DOCUMENTATION  BLOCK
+!
+! SUBPROGRAM: SETCL          ENCODES TIME-AVERAGED TITLE
+!   AUTHOR: JONES,R.E.       ORG: W342       DATE: 86-12-03
+!
+!  ABSTRACT: ENCODES THE FIRST THIRTEEN CHARACTERS IN THE TITLE
+!      TO MAKE THE TITLE A TIME-AVERAGED TITLE.
+!
+! PROGRAM HISTORY LOG:
+!   88-11-28  R.E.JONES
+!   89-11-01  R.E.JONES   CONVERT TO CRAY CFT77 FORTRAN
+!
+! USAGE:  CALL CLIMO(F2,UNIT,KTITLE)
+!
+!   INPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     CF2    ARG LIST  LENGTH OF THE FORECAST PERIOD
+!     UNIT   ARG LIST  UNITS FOR CF2
+!     KTITLE ARG LIST  TITLE TO BE MODIFIED
+!
+!   OUTPUT VARIABLES:
+!     NAMES  INTERFACE DESCRIPTION OF VARIABLES AND TYPES
+!     ------ --------- -----------------------------------------------
+!     KTITLE ARG LIST  TITLE WITH THE TIME-AVERAGED INCLUDED
+!
+! ATTRIBUTES:
+!   LANGUAGE: CRAY CFT77 FORTRAN
+!   MACHINE:  CRAY Y-MP8/832
+!
+!   
+!
         CHARACTER*324 KTITLE
         CHARACTER*13  BLANK
         CHARACTER*4   UNIT
         CHARACTER*4   DUNIT
         CHARACTER*4   HUNIT
-C
+!
         DATA  BLANK /'             '/
         DATA  DUNIT /'-DAY'/
         DATA  HUNIT /'-HR '/
-C
+!
   100   FORMAT (1X, F4.1, A4, ' AVG' )
-C
+!
         KTITLE(1:13) = BLANK(1:13)
-C
+!
         WRITE (KTITLE(1:13),100) CF2 , DUNIT(1:4)
-C
+!
        RETURN
        END
