@@ -1,0 +1,13 @@
+SHELL=/bin/sh
+
+SUBDIRS = bacio bufr sp sfcio sigio nemsio crtm w3emc w3nco
+
+all: $(SUBDIRS)
+	@for dir in $(SUBDIRS); do \
+           ( cd $$dir; echo "Making $@ in `pwd`" ; make -f makefile_DTC ) ; \
+        done
+
+clean: $(SUBDIRS)
+	@for dir in $(SUBDIRS); do \
+           ( cd $$dir; echo "Making $@ in `pwd`" ; make -f makefile_DTC $@ ) ; \
+        done
